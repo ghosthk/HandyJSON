@@ -98,6 +98,10 @@ public class HelpingMapper {
         self.specify(property: &property, name: name, converter: nil)
     }
     
+    public func specify<T>(property: inout T, names: [String]) {
+        self.specify(property: &property, names: names, converter: nil, json: nil)
+    }
+    
     public func specify<T>(property: inout T, converter: @escaping (String) -> T) {
         self.specify(property: &property, name: nil, converter: converter)
     }
@@ -107,9 +111,13 @@ public class HelpingMapper {
     }
     
     public func specify<T>(property: inout T, name: String?, converter: ((String) -> T)?, json:((T) -> String?)?) {
+        specify(property: &property, names: name == nil ? nil : [name!], converter: converter, json: json)
+    }
+    
+    public func specify<T>(property: inout T, names: [String]?, converter: ((String) -> T)?, json:((T) -> String?)?) {
         let pointer = withUnsafePointer(to: &property, { return $0 })
         let key = Int(bitPattern: pointer)
-        let names = (name == nil ? nil : [name!])
+        let names = names
         
         var assignmentClosure: ((Any?) -> (Any?))? = nil
         var takeValueClosure: ((Any?) -> (Any?))? = nil
