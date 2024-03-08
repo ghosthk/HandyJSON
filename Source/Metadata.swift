@@ -267,11 +267,11 @@ extension Metadata {
         var contextDescriptorOffsetLocation: Int {
             return 1
         }
-
+        
         var genericArgumentOffsetLocation: Int {
             return 2
         }
-
+        
         var genericArgumentVector: UnsafeRawPointer? {
             let pointer = UnsafePointer<Int>(self.pointer)
             let base = pointer.advanced(by: genericArgumentOffsetLocation)
@@ -280,7 +280,7 @@ extension Metadata {
             }
             return UnsafeRawPointer(base)
         }
-
+        
         func propertyDescriptions() -> [Property.Description]? {
             guard let fieldOffsets = self.fieldOffsets, let fieldRecords = self.reflectionFieldDescriptor?.fieldRecords else {
                 return []
@@ -293,8 +293,6 @@ extension Metadata {
             for i in 0..<self.numberOfFields where fieldRecords[i].mangledTypeName != nil{
                 let name = fieldRecords[i].fieldName
                 let cMangledTypeName = fieldRecords[i].mangledTypeName!
-                    let fieldType = _getTypeByMangledNameInContext(cMangledTypeName, getMangledTypeNameSize(cMangledTypeName), genericContext: self.contextDescriptorPointer, genericArguments: self.genericArgumentVector) {
-
                 let functionMap: [String: () -> Any.Type?] = [
                     "function": { _getTypeByMangledNameInContext(cMangledTypeName, UInt(getMangledTypeNameSize(cMangledTypeName)), genericContext: self.contextDescriptorPointer, genericArguments: self.genericArgumentVector) }
                 ]
